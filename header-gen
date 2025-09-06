@@ -1,0 +1,65 @@
+#!/bin/bash
+# Guillermo Torres
+# Fecha: vie 05 sep 2025
+# Hora: 13:42
+# Descripción: 'Redesign of my bashscript command to create headers for various languages'
+# Distribución: Ubuntu 24.04.3 LTS
+
+
+# It was made firstly in spanish, sorry for spanish variables :(
+
+if [ -z "$1" ]; then
+    echo "No has especificado el parámetro"
+    exit 1
+fi
+
+name=""
+archivo="$1"
+shift
+
+descripcion="$*"
+fecha="$(date '+%a %d %b %Y')"
+hora="$(date '+%H:%M')"
+distro="$(lsb_release -d | cut -f2)"
+
+write_header-hashtag() {
+    echo "$1" > "$archivo"
+    echo "" >> "$archivo"
+    echo "# $name" >> "$archivo"
+    echo "# Date: $fecha" >> "$archivo"
+    echo "# Time: $hora" >> "$archivo"
+    echo "# Description: '$descripcion'" >> "$archivo"
+    echo "# Distribution: $distro" >> "$archivo"
+}
+
+write_header-php(){
+    echo "// $name" >> "$archivo"
+    echo "// Date: $fecha" >> "$archivo"
+    echo "// Time: $hora" >> "$archivo"
+    echo "// Description: '$descripcion'" >> "$archivo"
+    echo "//  Distribution: $distro" >> "$archivo"
+   
+
+}
+
+case "$archivo" in
+    *.py)
+        write_header-hashtag "#!$(command -v python3)"
+        ;;
+    *.sh)
+        write_header-hashtag "#!/bin/bash"
+        chmod +x "$archivo"
+        ;;
+    *.php)
+        echo "<?php" > "$archivo"
+        write_header-php
+        echo "?>" >> $archivo
+        ;;
+    *)
+        echo "Used a non supported extension file. Assuming it's bash"
+        write_header-hashtag "#!/bin/bash"
+        exit 1
+        ;;
+esac
+
+echo "File '$archivo' created on $(pwd)"
