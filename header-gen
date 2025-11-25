@@ -20,7 +20,7 @@ shift
 descripcion="$*"
 fecha="$(date '+%a %d %b %Y')"
 hora="$(date '+%H:%M')"
-distro="$(lsb_release -d | cut -f2)"
+distro="$(grep -E '^PRETTY_NAME=' /etc/os-release | cut -d= -f2 | tr -d '"')"
 
 write_header-hashtag() {
     echo "$1" > "$archivo"
@@ -42,6 +42,16 @@ write_header-php(){
 
 }
 
+write_header-powershell(){
+    echo "<#" > "$archivo"
+    echo "  $name" >> "$archivo"
+    echo "  Date: $fecha" >> "$archivo"
+    echo "  Time: $hora" >> "$archivo"
+    echo "  Description: '$descripcion'" >> "$archivo"
+    echo "  Distribution: $distro" >> "$archivo"
+    echo "#>" >> "$archivo"
+}
+
 case "$archivo" in
     *.py)
         write_header-hashtag "#!$(command -v python3)"
@@ -54,6 +64,9 @@ case "$archivo" in
         echo "<?php" > "$archivo"
         write_header-php
         echo "?>" >> $archivo
+        ;;
+    *.ps1)
+        write_header-powershell
         ;;
     *)
         echo "Used a non supported extension file. Assuming it's bash"

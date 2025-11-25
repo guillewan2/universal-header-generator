@@ -7,6 +7,7 @@ It creates the file with the header at the top, ensuring consistency across your
 - Shell scripts (Bash, Zsh, ...)
 - Python
 - PHP
+- PowerShell
 
 
 ## Use
